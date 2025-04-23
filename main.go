@@ -1,9 +1,9 @@
 package main
 
 import (
-	log "github.com/sirupsen/logrus"
+	"web-page-analyzer/routers"
 )
 
 func main() {
-	log.Info("Test")
+	routers.InitRouter()
 }
