@@ -39,7 +39,7 @@ func InitRouter() *gin.Engine {
 
 	r.POST("/api/v1/analyze", v1.AnalyzeUrl)
 
-	err := r.Run(":8080")
+	err := r.Run("127.0.0.1:3000")
 	if err != nil {
 		panic("[Error] failed to start Gin server due to: " + err.Error())
 	}

@@ -1,8 +1,6 @@
 package main
 
-import (
-	"web-page-analyzer/routers"
-)
+import "web-page-analyzer/routers"
 
 func main() {
 	routers.InitRouter()

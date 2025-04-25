@@ -24,7 +24,7 @@ func AnalyzeUrl(c *gin.Context) {
 		return
 	}
 
-	if _, err := analyze.Analyze(request); err != nil {
+	if _, err := analyze.Analyze(&request); err != nil {
 
 	}
 }
