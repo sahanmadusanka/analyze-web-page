@@ -3,6 +3,7 @@ package http
 import (
 	"io"
 	"net/http"
+	"time"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -13,8 +14,12 @@ type WebPageContent struct {
 	Errors     map[string]string
 }
 
-func GetUrl(url string) (*http.Response, error) {
-	resp, err := http.Get(url)
+func GetUrl(url string, timeout int) (*http.Response, error) {
+	client := http.Client{
+		Timeout: time.Second * time.Duration(timeout),
+	}
+
+	resp, err := client.Get(url)
 	if err != nil {
 		log.Errorf("error in fetching a web page, url: %v error: %v", url, err)
 		return nil, err
@@ -23,7 +28,7 @@ func GetUrl(url string) (*http.Response, error) {
 }
 
 func FetchWebPage(url string) *WebPageContent {
-	resp, err := GetUrl(url)
+	resp, err := GetUrl(url, 3)
 	if err != nil {
 		return nil
 	}

@@ -1,7 +1,14 @@
 package models
 
 type AnalyzeResponse struct {
-	HtmlVersion string
-	PageTitle   string
-	Headings    map[string]int
+	HtmlVersion string         `json:"htmlVersion"`
+	PageTitle   string         `json:"pageTitle"`
+	Headings    map[string]int `json:"headings"`
+	Link        Link           `json:"link"`
+}
+
+type Link struct {
+	InternalLinkCount int
+	ExternalLinkCount int
+	InaccessibleLinks []string
 }

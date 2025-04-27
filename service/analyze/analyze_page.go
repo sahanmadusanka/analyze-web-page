@@ -47,10 +47,13 @@ func buildResponse(request *m.Request, doc *goquery.Document) *m.AnalyzeResponse
 
 	headings := GetHeadings(doc)
 
+	links := GetLinks(request.Url, doc)
+
 	return &m.AnalyzeResponse{
 		HtmlVersion: htmlVersion,
 		PageTitle:   title,
 		Headings:    headings,
+		Link:        buildLinkResponse(&links),
 	}
 }
 
@@ -97,4 +100,56 @@ func GetHeadings(doc *goquery.Document) map[string]int {
 
 func getNodeCount(s *goquery.Selection) int {
 	return len(s.Nodes)
+}
+
+func GetLinks(pageUrl string, doc *goquery.Document) map[string]LinkResponse {
+	var links []string
+
+	doc.Find("a").Each(func(index int, tag *goquery.Selection) {
+		val, exists := tag.Attr("href")
+
+		if exists && validateUrl(val) && !slices.Contains(links, val) {
+			links = append(links, val)
+		}
+	})
+
+	log.Info("start analyzing links, count :", len(links))
+
+	return AnalyzeLinks(pageUrl, links)
+}
+
+func buildLinkResponse(links *map[string]LinkResponse) m.Link {
+	var internalLinkCount int
+	var externalLinkCount int
+	var inaccessibleLinks []string
+
+	for _, link := range *links {
+
+		if link.Error != nil {
+			inaccessibleLinks = append(inaccessibleLinks, link.Url)
+			continue
+		}
+
+		if link.IsExternal {
+			externalLinkCount++
+		} else {
+			internalLinkCount++
+		}
+
+	}
+
+	return m.Link{
+		InternalLinkCount: internalLinkCount,
+		ExternalLinkCount: externalLinkCount,
+		InaccessibleLinks: inaccessibleLinks,
+	}
+}
+
+// Only look for a page that contains a form with three inputs: email, password, and a submit button
+func LoginPageExsit(doc *goquery.Document) bool {
+	email := doc.Find("form input[type^=\"email\"]").Length() > 0
+	password := doc.Find("form input[type^=\"password\"]").Length() > 0
+	submit := doc.Find("form input[type^=\"submit\"]").Length() > 0
+
+	return email && password && submit
 }

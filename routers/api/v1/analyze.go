@@ -10,6 +10,10 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+type Request struct {
+	Url string `json:"url" binding:"required" required:"$field is required"`
+}
+
 // @Summary Analyze given Web page URL
 // @Produce  json
 // @Success 200 {object} app.Response
@@ -24,7 +28,11 @@ func AnalyzeUrl(c *gin.Context) {
 		return
 	}
 
-	if _, err := analyze.Analyze(&request); err != nil {
+	resp, err := analyze.Analyze(&request)
 
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}
+
+	c.JSON(http.StatusOK, resp)
 }
