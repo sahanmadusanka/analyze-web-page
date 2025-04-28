@@ -103,7 +103,7 @@ func getNodeCount(s *goquery.Selection) int {
 }
 
 func GetLinks(pageUrl string, doc *goquery.Document) map[string]LinkResponse {
-	var links []string
+	var links []string = []string{}
 
 	doc.Find("a").Each(func(index int, tag *goquery.Selection) {
 		val, exists := tag.Attr("href")
@@ -121,7 +121,7 @@ func GetLinks(pageUrl string, doc *goquery.Document) map[string]LinkResponse {
 func buildLinkResponse(links *map[string]LinkResponse) m.Link {
 	var internalLinkCount int
 	var externalLinkCount int
-	var inaccessibleLinks []string
+	var inaccessibleLinks []string = []string{}
 
 	for _, link := range *links {
 

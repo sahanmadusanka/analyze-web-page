@@ -49,7 +49,7 @@
               <ul>
                 <li>Internal Links: ${data.link.InternalLinkCount}</li>
                 <li>External Links: ${data.link.ExternalLinkCount}</li>
-                <li>Inaccessible Links:</li>
+                <li>Inaccessible Links: ${data.link.InaccessibleLinks.length}</li>
                 <ul>
                   ${data.link.InaccessibleLinks.map(link => `<li>${link}</li>`).join('')}
                 </ul>
