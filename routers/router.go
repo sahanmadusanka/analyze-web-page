@@ -1,8 +1,9 @@
 package routers
 
 import (
+	"net/http"
 	"time"
-	v1 "web-page-analyzer/api/v1"
+	v1 "web-page-analyzer/routers/api/v1"
 
 	"github.com/gin-gonic/gin"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
@@ -34,6 +35,11 @@ func InitRouter() *gin.Engine {
 	r := gin.New()
 
 	r.Use(initLoggin(), gin.Recovery())
+
+	r.LoadHTMLFiles("html/index.html")
+	r.GET("/", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "index.html", gin.H{})
+	})
 
 	r.GET("/metrics", gin.WrapH(promhttp.Handler()))
 

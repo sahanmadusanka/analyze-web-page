@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Page Analyzer</title>
+    <script src="https://unpkg.com/htmx.org@2.0.4"></script>
+    <script src="https://unpkg.com/htmx.org/dist/ext/json-enc.js"></script>
+    <style>
+        .section {
+            margin-bottom: 20px;
+        }
+
+        .section h3 {
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 5px;
+        }
+
+        ul {
+            list-style: disc;
+            margin-left: 20px;
+        }
+    </style>
+    <script>
+        function renderJson(resp) {
+          const result = document.getElementById('response');
+          const data = JSON.parse(resp) 
+          
+          result.innerHTML = `
+            <div class="section">
+              <h3>HTML Version</h3>
+              <div>${data.htmlVersion}</div>
+            </div>
+        
+            <div class="section">
+              <h3>Page Title</h3>
+              <div>${data.pageTitle}</div>
+            </div>
+        
+            <div class="section">
+              <h3>Headings Count</h3>
+              <ul>
+                ${Object.entries(data.headings).map(([key, value]) => `<li>${key}: ${value}</li>`).join('')}
+              </ul>
+            </div>
+        
+            <div class="section">
+              <h3>Links</h3>
+              <ul>
+                <li>Internal Links: ${data.link.InternalLinkCount}</li>
+                <li>External Links: ${data.link.ExternalLinkCount}</li>
+                <li>Inaccessible Links:</li>
+                <ul>
+                  ${data.link.InaccessibleLinks.map(link => `<li>${link}</li>`).join('')}
+                </ul>
+              </ul>
+            </div>
+          `;
+        }
+    </script>
+</head>
+<body>
+    <h1>Analyze a Web Page</h1>
+    <form id="analyze-form"
+        hx-post="/api/v1/analyze"
+        hx-target="#response"
+        hx-ext="json-enc"
+        hx-on::after-request="renderJson(event.detail.xhr.response)"
+        hx-swap="innerHTML" >
+
+        <label for="url">Enter URL:</label>
+        <input type="text" name="url" placeholder="https://example.com" required>
+        <button type="submit">Analyze</button>
+    </form>
+
+    <div id="response"></div>
+</body>
+</html>
