@@ -49,11 +49,14 @@ func buildResponse(request *m.Request, doc *goquery.Document) *m.AnalyzeResponse
 
 	links := GetLinks(request.Url, doc)
 
+	loginPageExsit := LoginPageExsit(doc)
+
 	return &m.AnalyzeResponse{
-		HtmlVersion: htmlVersion,
-		PageTitle:   title,
-		Headings:    headings,
-		Link:        buildLinkResponse(&links),
+		HtmlVersion:    htmlVersion,
+		PageTitle:      title,
+		Headings:       headings,
+		Link:           buildLinkResponse(&links),
+		LoginPageExsit: loginPageExsit,
 	}
 }
 
