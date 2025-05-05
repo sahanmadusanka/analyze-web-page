@@ -9,7 +9,7 @@ type AnalyzeResponse struct {
 }
 
 type Link struct {
-	InternalLinkCount int
-	ExternalLinkCount int
-	InaccessibleLinks []string
+	InternalLinkCount int      `json:"internalLinkCount"`
+	ExternalLinkCount int      `json:"externalLinkCount"`
+	InaccessibleLinks []string `json:"inaccessibleLinks"`
 }

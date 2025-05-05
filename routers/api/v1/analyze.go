@@ -23,7 +23,7 @@ func AnalyzeUrl(c *gin.Context) {
 	var request m.Request
 
 	if err := c.BindJSON(&request); err != nil {
-		log.Error("Error in decording request payload; Error: ", err.Error())
+		log.Error("Error in decoding request payload; Error: ", err.Error())
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
@@ -32,6 +32,7 @@ func AnalyzeUrl(c *gin.Context) {
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
 
 	c.JSON(http.StatusOK, resp)

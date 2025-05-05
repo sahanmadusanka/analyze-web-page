@@ -21,19 +21,19 @@ func GetUrl(url string, timeout int) (*http.Response, error) {
 
 	resp, err := client.Get(url)
 	if err != nil {
-		log.Errorf("error in fetching a web page, url: %v error: %v", url, err)
+		log.Errorf("error fetching web page; url: %v, error: %v", url, err)
 		return nil, err
 	}
 	return resp, nil
 }
 
-func FetchWebPage(url string) *WebPageContent {
+func FetchWebPage(url string) (*WebPageContent, error) {
 	resp, err := GetUrl(url, 3)
 	if err != nil {
-		return nil
+		return nil, nil
 	}
 
-	return buildResponse(resp)
+	return buildResponse(resp), nil
 }
 
 func buildResponse(resp *http.Response) *WebPageContent {
@@ -41,7 +41,7 @@ func buildResponse(resp *http.Response) *WebPageContent {
 
 	bytes, err := io.ReadAll(resp.Body)
 	if err != nil {
-		log.Errorf("error in read web page body, error: %v", err)
+		log.Errorf("error reading web page body: %v", err)
 		return nil
 	}
 

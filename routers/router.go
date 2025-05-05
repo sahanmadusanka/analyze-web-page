@@ -10,7 +10,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func initLoggin() gin.HandlerFunc {
+func initLogging() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		startTime := time.Now()
 
@@ -34,7 +34,7 @@ func InitRouter() *gin.Engine {
 
 	r := gin.New()
 
-	r.Use(initLoggin(), gin.Recovery())
+	r.Use(initLogging(), gin.Recovery())
 
 	r.LoadHTMLFiles("html/index.html")
 	r.GET("/", func(c *gin.Context) {
@@ -47,7 +47,7 @@ func InitRouter() *gin.Engine {
 
 	err := r.Run(":3000")
 	if err != nil {
-		panic("[Error] failed to start Gin server due to: " + err.Error())
+		log.Fatalf("[Error] failed to start Gin server due to: %v", err)
 	}
 
 	return r

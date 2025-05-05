@@ -47,18 +47,18 @@
             <div class="section">
               <h3>Links</h3>
               <ul>
-                <li>Internal Links: ${data.link.InternalLinkCount}</li>
-                <li>External Links: ${data.link.ExternalLinkCount}</li>
-                <li>Inaccessible Links: ${data.link.InaccessibleLinks.length}</li>
+                <li>Internal Links: ${data.link.internalLinkCount}</li>
+                <li>External Links: ${data.link.externalLinkCount}</li>
+                <li>Inaccessible Links: ${data.link.inaccessibleLinks.length}</li>
                 <ul>
-                  ${data.link.InaccessibleLinks.map(link => `<li>${link}</li>`).join('')}
+                  ${data.link.inaccessibleLinks.map(link => `<li>${link}</li>`).join('')}
                 </ul>
               </ul>
             </div>
 
             <div class="section">
               <h3>Contain a login form</h3>
-              <h4>${data.loginPageExsit? 'Login form exsit' : 'Login form not found'}</h4>
+              <h4>${data.loginPageExist? 'Login form exist' : 'Login form not found'}</h4>
             </div>
           `;
         }

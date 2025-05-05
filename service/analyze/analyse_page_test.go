@@ -88,7 +88,7 @@ func TestGetHtmlVersion(t *testing.T) {
 
 	doc := ParseDocument(page)
 
-	htmlVersion := GetHtmlVersion(doc)
+	htmlVersion := GetHTMLVersion(doc)
 	assert.Equal(t, "HTML5", htmlVersion)
 }
 
@@ -141,7 +141,7 @@ func TestLoginPageExsit(t *testing.T) {
 
 	doc := ParseDocument(page)
 
-	loginExsit := LoginPageExsit(doc)
+	loginExsit := LoginPageExist(doc)
 
 	assert.True(t, loginExsit)
 }
