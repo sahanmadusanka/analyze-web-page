@@ -15,19 +15,19 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func Analyze(request *m.Request) (*m.AnalyzeResponse, error) {
+func Analyze(w client.WebClient, request *m.Request) (*m.AnalyzeResponse, error) {
 
 	if !validateUrl(request.Url) {
 		return nil, errors.New("input url is not valid")
 	}
 
-	resp, err := client.FetchWebPage(request.Url)
+	resp, err := client.FetchWebPage(w, request.Url)
 	if err != nil {
 		return nil, err
 	}
 	doc := ParseDocument(resp)
 
-	return buildResponse(request, doc), nil
+	return buildResponse(w, request, doc), nil
 }
 
 func validateUrl(url string) bool {
@@ -47,7 +47,7 @@ func ParseDocument(c *client.WebPageContent) *goquery.Document {
 	return doc
 }
 
-func buildResponse(request *m.Request, doc *goquery.Document) *m.AnalyzeResponse {
+func buildResponse(w client.WebClient, request *m.Request, doc *goquery.Document) *m.AnalyzeResponse {
 	if doc == nil {
 		return createBlankResponse()
 	}
@@ -58,7 +58,7 @@ func buildResponse(request *m.Request, doc *goquery.Document) *m.AnalyzeResponse
 
 	headings := GetHeadings(doc)
 
-	links := GetLinks(request.Url, doc)
+	links := GetLinks(w, request.Url, doc)
 
 	loginPageExsit := LoginPageExist(doc)
 
@@ -144,7 +144,7 @@ func getNodeCount(s *goquery.Selection) int {
 	return len(s.Nodes)
 }
 
-func GetLinks(pageUrl string, doc *goquery.Document) map[string]LinkResponse {
+func GetLinks(w client.WebClient, pageUrl string, doc *goquery.Document) map[string]LinkResponse {
 	var links []string
 
 	doc.Find("a").Each(func(index int, tag *goquery.Selection) {
@@ -157,7 +157,7 @@ func GetLinks(pageUrl string, doc *goquery.Document) map[string]LinkResponse {
 
 	log.Infof("start analyzing links, count: %d", len(links))
 
-	return AnalyzeLinks(pageUrl, links)
+	return AnalyzeLinks(w, pageUrl, links)
 }
 
 func buildLinkResponse(links *map[string]LinkResponse) m.Link {

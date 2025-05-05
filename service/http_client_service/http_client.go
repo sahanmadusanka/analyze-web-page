@@ -8,13 +8,19 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+type WebClient interface {
+	GetContent(url string, timeout int) (*http.Response, error)
+}
+
+type WebHttpClient struct{}
+
 type WebPageContent struct {
 	Content    string
 	StatusCode int
 	Errors     map[string]string
 }
 
-func GetUrl(url string, timeout int) (*http.Response, error) {
+func (WebHttpClient) GetContent(url string, timeout int) (*http.Response, error) {
 	client := http.Client{
 		Timeout: time.Second * time.Duration(timeout),
 	}
@@ -27,8 +33,8 @@ func GetUrl(url string, timeout int) (*http.Response, error) {
 	return resp, nil
 }
 
-func FetchWebPage(url string) (*WebPageContent, error) {
-	resp, err := GetUrl(url, 3)
+func FetchWebPage(w WebClient, url string) (*WebPageContent, error) {
+	resp, err := w.GetContent(url, 3)
 	if err != nil {
 		return nil, nil
 	}

@@ -5,6 +5,7 @@ import (
 
 	m "web-page-analyzer/models"
 	"web-page-analyzer/service/analyze"
+	client "web-page-analyzer/service/http_client_service"
 
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
@@ -28,7 +29,9 @@ func AnalyzeUrl(c *gin.Context) {
 		return
 	}
 
-	resp, err := analyze.Analyze(&request)
+	webClient := client.WebHttpClient{}
+
+	resp, err := analyze.Analyze(webClient, &request)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})

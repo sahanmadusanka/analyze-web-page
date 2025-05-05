@@ -16,7 +16,7 @@ type LinkResponse struct {
 }
 
 // Analyze whether the given links are accessible and identify which ones are internal or external relative to the 'pageUrl'
-func AnalyzeLinks(pageUrl string, links []string) map[string]LinkResponse {
+func AnalyzeLinks(w client.WebClient, pageUrl string, links []string) map[string]LinkResponse {
 	var wg sync.WaitGroup
 
 	ch := make(chan LinkResponse, len(links))
@@ -29,7 +29,7 @@ func AnalyzeLinks(pageUrl string, links []string) map[string]LinkResponse {
 
 	for _, link := range links {
 		wg.Add(1)
-		go checkLink(hostname, link, &wg, ch)
+		go checkLink(w, hostname, link, &wg, ch)
 	}
 
 	wg.Wait()
@@ -53,10 +53,10 @@ func getHostname(pageUrl string) (string, error) {
 	return u.Scheme + "://" + u.Hostname(), nil
 }
 
-func checkLink(hostname string, link string, wg *sync.WaitGroup, ch chan<- LinkResponse) {
+func checkLink(w client.WebClient, hostname string, link string, wg *sync.WaitGroup, ch chan<- LinkResponse) {
 	defer wg.Done()
 
-	resp, err := client.GetUrl(link, 2)
+	resp, err := w.GetContent(link, 2)
 	if err != nil {
 		ch <- LinkResponse{Url: link, Error: err}
 		return
