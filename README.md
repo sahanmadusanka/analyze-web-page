@@ -47,9 +47,9 @@ Navigate to the [localhost:3000](localhost:3000) in the browser to access the an
     "h6": "integer"
   },
   "link": {
-    "InternalLinkCount": "integer",
-    "ExternalLinkCount": "integer",
-    "InaccessibleLinks": ["string"]
+    "internalLinkCount": "integer",
+    "externalLinkCount": "integer",
+    "inaccessibleLinks": ["string"]
   }
 }
 ```
