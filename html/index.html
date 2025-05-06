@@ -22,9 +22,16 @@
         }
     </style>
     <script>
-        function renderJson(resp) {
+        function renderJson(xhr) {
+          //Clear error container
+          document.getElementById('error').innerHTML = '';
+          
+          if( xhr.status !== 200){
+            showError(xhr);
+            return;
+          }
           const result = document.getElementById('response');
-          const data = JSON.parse(resp) 
+          const data = JSON.parse(xhr.response);
           
           result.innerHTML = `
             <div class="section">
@@ -60,8 +67,15 @@
               <h3>Contain a login form</h3>
               <h4>${data.loginPageExist? 'Login form exist' : 'Login form not found'}</h4>
             </div>
-          `;
+          `
         }
+
+       function showError(xhr){
+        const error = document.getElementById('error');
+        const data = JSON.parse(xhr.response); 
+
+        error.innerHTML = `<h2>${data.error}</h2>`;
+       }
     </script>
 </head>
 <body>
@@ -70,8 +84,8 @@
         hx-post="/api/v1/analyze"
         hx-target="#response"
         hx-ext="json-enc"
-        hx-on::after-request="renderJson(event.detail.xhr.response)"
-        hx-swap="innerHTML" >
+        hx-on::after-request="renderJson(event.detail.xhr)"
+        hx-swap="innerHTML">
 
         <label for="url">Enter URL:</label>
         <input type="text" name="url" placeholder="https://example.com" required>
@@ -79,5 +93,6 @@
     </form>
 
     <div id="response"></div>
+    <div id="error"></div>
 </body>
 </html>
